@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calcule amortissement</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: auto;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        body {
+        background-image: url('https://www.ooinvestir.fr/sites/ooinvestir/files/styles/vignette_d_article_sm/public/2023-02/Crowdfunding-immobilier-et-PEA-PME-ce-qu%27il-faut-savoir-ooinvestir.jpg?h=cc7612fd&itok=AflSLzt5.png');
+        background-size: cover;
+        background-repeat:repeat;
+        background-position: center;
+        height: 100vh;
+        }
+        table {
+        background-color: #ccccff; 
+        }
+        .nav-area
+        {
+        background: rgba(0,0,0,0.6);
+        height: 80px;
+        position: absolute;
+        width: 99%;
+
+        }
+        .logo
+        {
+        margin: 10px 10px;
+        height: 50px;
+        float: left;
+        color: #fff;
+        font-size: 40px;
+        text-transform: uppercase;
+        }
+        .logo img {
+        width: 60px;
+        height: auto;
+        }
+        #loanForm select,
+        #loanForm input {
+        font-size: 13px; 
+        color: #000000;
+        }
+        #loanForm button {
+        font-size: 18px;
+        padding: 5px 10px;
+        margin: auto;
+        display: block;
+        }
+        #loanForm label
+        {
+        font-size: 18px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-area">
+        <div class="logo">
+            <img src="https://img.favpng.com/13/4/5/vector-graphics-clip-art-loan-royalty-free-finance-png-favpng-KstCQsm7fAzdGh612ajDtCusj.jpg" alt="Logo">
+        </div>
+        <div class="logo">tableau d'amortissement</div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <form id="loanForm">
+        <label for="modeAnn">Mode d'annuité:</label>
+        <select id="modeAnn">
+            <option value="cons">Constant</option>
+            <option value="var">Variable</option>
+        </select>
+
+        <label for="n">Nombre de Période:</label>
+        <input type="number" id="n" name="n">
+
+        <label for="c0">Montant emprunté:</label>
+        <input type="number" id="c0" name="c0">
+        <label for="periode">Période:</label>
+        <select id="periode">
+            <option value="annee">Année</option>
+            <option value="mm">Mois</option>
+            <option value="sem">Semestre</option>
+            <option value="tri">Trimestre</option>
+        </select>
+
+        <label for="i">Intérêt annuel:</label>
+        <input type="number" id="i" name="i">
+        <br>
+        <br>
+        <label for="texttt">Si Mode d'annuité n'est pas constant :</label>
+
+        <label for="modeAm">Mode d'amortissement:</label>
+        <select id="modeAm" name="modeAm">
+            <option value=".."></option>
+            <option value="cte">Constant</option>
+            <option value="varia">Variable</option>
+        </select>
+
+        <label for="choose">Choisir la colonne à remplir:</label>
+        <select id="choose" name="choose">
+            <option value="..."></option>
+            <option value="amm">Amortissement</option>
+            <option value="annn">Annuité</option>
+        </select>
+        <br>
+        <br>
+
+        <button type="button" onclick="calculateLoan()">Calculer</button>
+        <br>
+    </form>
+
+    <table id="resultTable">
+        <tr>
+            <th>Montant restant</th>
+            <th>Intérêt</th>
+            <th>Amortissement</th>
+            <th>Annuité</th>
+        </tr>
+    </table>
+
+    <script>
+        function calculateLoan() {
+            var modeAnnSelect = document.getElementById("modeAnn");
+            var selectedMode = modeAnnSelect.value;
+            console.log("Selected Mode: " + selectedMode);
+
+            var modeAmSelect1 = document.getElementById("modeAm");
+            var selectedMode1 = modeAmSelect1.value;
+            console.log("Selected Mode1: " + selectedMode1);
+
+            var modeAmSelect2 = document.getElementById("choose");
+            var selectedMode2 = modeAmSelect2.value;
+            console.log("Selected Mode2: " + selectedMode2);
+
+            var modeAmSelect3 = document.getElementById("periode");
+            var selectedMode3 = modeAmSelect3.value;
+            console.log("Selected Mode3: " + selectedMode3);
+
+            let n = parseInt(document.getElementById("n").value);
+            let c0 = parseFloat(document.getElementById("c0").value);
+            let i = parseFloat(document.getElementById("i").value) / 100;
+            let modeAm = document.getElementById("modeAm").value;
+            let choose = document.getElementById("choose").value;
+
+            let li = [];
+            let lc = [];
+
+            if (selectedMode3 === "mm") {
+                i = ((1 + i) ** (1 / 12) - 1);
+            } else if (selectedMode3 === "sem") {
+                i = ((1 + i) ** (1 / 2) - 1);
+            } else if (selectedMode3 === "tri") {
+                i = ((1 + i) ** (1 / 4) - 1);
+            } else if (selectedMode3 === "annee") {
+                i = i;
+            }
+
+            if (selectedMode === "cons") {
+                let lm = [];
+                let m1 = (c0 * i) / (((1 + i) ** n) - 1);
+                let i1 = c0 * i;
+                lc.push(c0);
+                lm.push(m1);
+                li.push(i1);
+                let la = Array(n).fill(i1 + m1);
+
+                for (let j = 2; j <= n; j++) {
+                    let m = m1 * ((1 + i) ** (j - 1));
+                    lm.push(m);
+                    let c = lc[j - 2] - lm[j - 2];
+                    lc.push(c);
+                    let ip = lc[j - 1] * i;
+                    li.push(ip);
+                }
+
+                // Update the result table
+                updateResultTable(lc, li, lm, la);
+            } else if (selectedMode === "var") {
+                if (selectedMode1 === "cte") {
+                    let la = [];
+                    let m = c0 / n;
+                    let lm = Array(n).fill(m);
+                    let i1 = c0 * i;
+                    let a1 = i1 + m;
+                    li.push(i1);
+                    la.push(a1);
+                    lc.push(c0);
+
+                    for (let j = 1; j < n; j++) {
+                        let ap = la[j - 1] - (c0 * i / n);
+                        la.push(ap);
+                        let ip = la[j] - m;
+                        li.push(ip);
+                        let cp = lc[j - 1] - m;
+                        lc.push(cp);
+                    }
+                    updateResultTable(lc, li, lm, la);
+                } else if (selectedMode1 === "varia") {
+                    if (selectedMode2 === "amm") {
+                        lc.push(c0);
+                        let lm = [];
+                        let la = [];
+
+                        for (let j = 0; j < n; j++) {
+                            let mm = parseFloat(prompt(`Remplir la ${j + 1}-eme valeur de l'amortissement:`));
+                            lm.push(mm);
+                        }
+
+                        for (let j = 1; j < n; j++) {
+                            let cp = lc[j - 1] - lm[j - 1];
+                            lc.push(cp);
+                            let ip = lc[j - 1] * i;
+                            li.push(ip);
+                            let ap = li[j - 1] - lm[j - 1];
+                            la.push(ap);
+                        }
+                        updateResultTable(lc, li, lm, la);
+                    } else if (selectedMode2 === "annn") {
+                        lc.push(c0);
+                        let lm = [];
+                        let la = [];
+
+                        for (let j = 0; j < n; j++) {
+                            let aa = parseFloat(prompt(`Remplir la ${j + 1}-eme valeur de l'annuité:`));
+                            la.push(aa);
+                        }
+
+                        for (let j = 1; j < n; j++) {
+                            let cp = lc[j - 1] - lm[j - 1];
+                            lc.push(cp);
+                            let ip = lc[j - 1] * i;
+                            li.push(ip);
+                            let mp = la[j - 1] - li[j - 1];
+                            lm.push(mp);
+                        }
+
+                        updateResultTable(lc, li, lm, la);
+                    }
+                }
+            }
+        }
+
+        function updateResultTable(lc, li, lm, la) {
+            let resultTable = document.getElementById("resultTable");
+            resultTable.innerHTML = "<tr><th>Montant restant</th><th>Intérêt</th><th>Amortissement</th><th>Annuité</th></tr>";
+
+            for (let j = 0; j < lc.length; j++) {
+                let row = resultTable.insertRow(-1);
+                row.insertCell(0).textContent = lc[j];
+                row.insertCell(1).textContent = li[j];
+                row.insertCell(2).textContent = lm[j];
+                row.insertCell(3).textContent = la[j];
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>page2</title>
+    <style>
+        body {
+            background-image: url('https://www.ooinvestir.fr/sites/ooinvestir/files/styles/vignette_d_article_sm/public/2023-02/Crowdfunding-immobilier-et-PEA-PME-ce-qu%27il-faut-savoir-ooinvestir.jpg?h=cc7612fd&itok=AflSLzt5.png');
+            background-size: cover;
+            background-repeat: repeat;
+            background-position: center;
+            height: 100vh;
+            font-size:18px;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .button-container button {
+            display: inline-block;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    <br>
+    <form id="loanForm">
+        <label for="modeAnn">Mode d'annuité:</label>
+        <select id="modeAnn">
+            <option value="cons">Constant</option>
+            <option value="var">Variable</option>
+        </select>
+
+        <label for="n">Nombre de Période:</label>
+        <input type="number" id="n" name="n">
+
+        <label for="a">annuite:</label>
+        <input type="number" id="a" name="a">
+
+        <label for="i">L'intérêt par période:</label>
+        <input type="number" id="i" name="i">
+        <br>
+        <br>
+        <div class="button-container">
+            <button type="button" onclick="calculateLoan()">Calculer val actuelle</button>
+            <button type="button" onclick="calculateValAcquise()">Calculer val acquise</button>
+        </div>
+        <br>
+    </form>
+
+    <div id="resultContainer"></div>
+
+    <script>
+        let debutPer, finPer, v, A_debutPer, A_finPer, A_v;
+
+        function calculateLoan() {
+            let modeAnn = document.getElementById("modeAnn").value;
+            let n = parseInt(document.getElementById("n").value);
+            let a = parseFloat(document.getElementById("a").value);
+            let i = parseFloat(document.getElementById("i").value) / 100;
+
+            if (modeAnn === "cons") {
+                debutPer = (a / i) * ((1 + i) * (1 - (1 + i) ** (-n)));
+                finPer = a * (1 - (1 - i) ** (-n)) / i;
+            } else {
+                let ann = [];
+                for (let j = 0; j < n; j++) {
+                    let an = parseFloat(prompt(`Remplir la ${j + 1}-eme valeur de l'annuité:`));
+                    ann.push(an);
+                }
+                v = 0;
+                for (let j = 0; j <= n; j++) {
+                    v += ann[j] * (1 + i) ** (-j);
+                }
+            }
+
+            displayResults();
+        }
+
+        function calculateValAcquise() {
+            let modeAnn = document.getElementById("modeAnn").value;
+            let n = parseInt(document.getElementById("n").value);
+            let a = parseFloat(document.getElementById("a").value);
+            let i = parseFloat(document.getElementById("i").value) / 100;
+
+            if (modeAnn === "cons") {
+                A_debutPer = (a / i) * ((1 + i) * ((1 + i) ** (n) - 1));
+                A_finPer = a * ((1 - i) ** (n) - 1) / i;
+            } else {
+                let ann1 = [];
+                for (let j = 0; j < n; j++) {
+                    let an1 = parseFloat(prompt(`Remplir la ${j + 1}-eme valeur de l'annuité:`));
+                    ann1.push(an1);
+                }
+                A_v = 0;
+                for (let j = 0; j <= n; j++) {
+                    A_v += ann1[j] * (1 + i) ** (n - j);
+                }
+            }
+
+            displayResults();
+        }
+
+        function displayResults() {
+            let resultContainer = document.getElementById("resultContainer");
+            resultContainer.innerHTML = "";
+                        if (debutPer !== undefined) {
+                resultContainer.innerHTML += `<p>valeur de Debut de Periode: ${debutPer}</p>`;
+            }
+
+            if (finPer !== undefined) {
+                resultContainer.innerHTML += `<p>valeur de fin de Periode: ${finPer}</p>`;
+            }
+
+            if (v !== undefined) {
+                resultContainer.innerHTML += `<p>V: ${v}</p>`;
+            }
+
+            if (A_debutPer !== undefined) {
+                resultContainer.innerHTML += `<p>A_debutPer: ${A_debutPer}</p>`;
+            }
+
+            if (A_finPer !== undefined) {
+                resultContainer.innerHTML += `<p>A_finPer: ${A_finPer}</p>`;
+            }
+
+            if (A_v !== undefined) {
+                resultContainer.innerHTML += `<p>A_v: ${A_v}</p>`;
+            }
+        }
+    </script>
+    <br>
+    <br>
+    <label for="v0">montant d'investissement:</label>
+    <input type="number" id="v0" name="v0">
+    <label for="n1">nombre de periode(en annee):</label>
+    <input type="number" id="n1" name="n1">
+    <label for="i1">interet par periode:</label>
+    <input type="number" id="i1" name="i1">
+    <br>
+    <button type="button" onclick="cal()">Calculer</button>
+    <script>
+        let v_n;
+
+        function cal() {
+            let v0 = document.getElementById("v0").value;
+            let n1 = parseInt(document.getElementById("n1").value);
+            let i1 = parseFloat(document.getElementById("i1").value) / 100;
+            v_n = v0 * (1 + i1 )**n1
+
+            displayResults1();
+        }
+
+        function displayResults1() {
+            let resultContainer = document.getElementById("resultContainer");
+            resultContainer.innerHTML = "";
+            {
+                resultContainer.innerHTML += `<p>la valeur acquse est: ${v_n}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
